@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
-<addon scheme="2.0">
+<addon scheme="3.0">
 	<id>order_address_list_exporter</id>
 	<name>Order Address List Exporter</name>
 	<description>Export order address list</description>
 	<version>1.0</version>
 	<priority>100500</priority>
+    <default_language>en</default_language>
 </addon>
