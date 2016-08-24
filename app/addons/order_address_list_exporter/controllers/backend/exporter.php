@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
             $data['province'] = $order['s_state'];
             $data['country'] = $order['s_country'];
             $data['post'] = $order['s_zipcode'];
-            $data['tel'] = $order['phone'];
+            $data['tel'] = $order['s_phone'];
 
             $output = $output . implode($data, ',') . PHP_EOL;
         }
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
             $data['province'] = $order['s_state'];
             $data['country'] = $order['s_country'];
             $data['post'] = $order['s_zipcode'];
-            $data['tel'] = $order['phone'];
+            $data['tel'] = $order['s_phone'];
 
             //fn_print_r($order);
             foreach($order['products'] as $product) {
