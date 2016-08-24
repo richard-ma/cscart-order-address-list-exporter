@@ -94,19 +94,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
 
             //fn_print_r($order);
             foreach($order['products'] as $product) {
-                fn_print_r($product);
+                //fn_print_r($product);
 
                 $product_id = $product['product_id'];
                 $icon = fn_get_cart_product_icon($product_id);
                 $image = $icon['detailed']['image_path'];
                 //fn_print_r($image); // print product image path
+                $size = '';
+                foreach ($product['product_options'] as $po) {
+                    $size = ($po['option_name'] == 'Size') ? $po['variant_name'] : 'N/A';
+                }
 
         		$end = $start + $delta - 1;
                 $objPHPExcel->getActiveSheet()
                         ->mergeCells('A'.$start.':A'.$end.'')
                         ->setCellValue('A'.$start.'', $data['order_id'])
     
-                        ->setCellValue('B'.$start.'', 'size: ' . 'Product Size') //TODO
+                        ->setCellValue('B'.$start.'', 'size: ' . $size)
                         ->mergeCells('B'.(string)($start+1).':B'.$end.'')
 
                         ->setCellValue('C'.$start.'', $data['name'])
@@ -118,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
 
                         ->setCellValue('D'.$start.'', $product['product'])
                         ->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
-                        ->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code']) //TODO
+                        ->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
 
                         ->getStyle('C'.(string)($start + 5))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 // add picture
@@ -136,7 +140,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
             }
         }
 
-        /*
         // Rename worksheet
         $objPHPExcel->getActiveSheet()->setTitle('Orders');
         
@@ -155,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
         
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $objWriter->save('php://output');
-         */
 
         exit;
     }
