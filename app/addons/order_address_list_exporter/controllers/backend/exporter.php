@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
         $output = "OrderNo, Name, Address, City, Province, Post, Country, Tel" . PHP_EOL;
         foreach ($orders as $order) {
             $data['order_id'] = $order['order_id'];
-            $data['name'] = $order['firstname'] . ' ' . $order['lastname'];
+            $data['name'] = $order['s_firstname'] . ' ' . $order['s_lastname'];
             $data['address'] = $order['s_address'] . ' ' . $order['s_address_2'];
             $data['city'] = $order['s_city'];
             $data['province'] = $order['s_state'];
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
 
         foreach ($orders as $order) {
             $data['order_id'] = $order['order_id'];
-            $data['name'] = $order['firstname'] . ' ' . $order['lastname'];
+            $data['name'] = $order['s_firstname'] . ' ' . $order['s_lastname'];
             $data['address'] = $order['s_address'] . ' ' . $order['s_address_2'];
             $data['city'] = $order['s_city'];
             $data['province'] = $order['s_state'];
@@ -100,9 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                 $icon = fn_get_cart_product_icon($product_id);
                 $image = $icon['detailed']['image_path'];
                 //fn_print_r($image); // print product image path
-                $size = '';
-                foreach ($product['product_options'] as $po) {
-                    $size = ($po['option_name'] == 'Size') ? $po['variant_name'] : 'N/A';
+                $size = 'N/A';
+                if (!empty($product['product_options'])) {
+                    foreach ($product['product_options'] as $po) {
+                        $size = ($po['option_name'] == 'Size') ? $po['variant_name'] : 'N/A';
+                    }
                 }
 
         		$end = $start + $delta - 1;
