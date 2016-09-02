@@ -35,14 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
         // export address list
         $output = "OrderNo, Name, Address, City, Province, Post, Country, Tel" . PHP_EOL;
         foreach ($orders as $order) {
-            $data['order_id'] = $order['order_id'];
-            $data['name'] = $order['s_firstname'] . ' ' . $order['s_lastname'];
-            $data['address'] = $order['s_address'] . ' ' . $order['s_address_2'];
-            $data['city'] = $order['s_city'];
-            $data['province'] = $order['s_state'];
-            $data['country'] = $order['s_country'];
-            $data['post'] = $order['s_zipcode'];
-            $data['tel'] = $order['s_phone'];
+            $data['order_id'] = '"' . $order['order_id'] . '"';
+            $data['name'] = '"' . $order['s_firstname'] . ' ' . $order['s_lastname'] . '"';
+            $data['address'] = '"' . $order['s_address'] . ' ' . $order['s_address_2'] . '"';
+            $data['city'] = '"' . $order['s_city'] . '"';
+            $data['province'] = '"' . $order['s_state'] . '"';
+            $data['post'] = '"' . $order['s_zipcode'] . '"';
+            $data['country'] = '"' . $order['s_country'] . '"';
+            $data['tel'] = '"' . $order['s_phone'] . '"';
 
             $output = $output . implode($data, ',') . PHP_EOL;
         }
