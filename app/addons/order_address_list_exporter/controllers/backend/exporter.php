@@ -101,9 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                 $image = $icon['detailed']['image_path'];
                 //fn_print_r($image); // print product image path
                 $size = 'N/A';
+                $options_str = "";
                 if (!empty($product['product_options'])) {
                     foreach ($product['product_options'] as $po) {
-                        $size = ($po['option_name'] == 'Size') ? $po['variant_name'] : 'N/A';
+                        $options_str .= $po['option_name'] . ': '. $po['variant_name'] . '; ';
                     }
                 }
 
@@ -112,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->mergeCells('A'.$start.':A'.$end.'')
                         ->setCellValue('A'.$start.'', $data['order_id'])
     
-                        ->setCellValue('B'.$start.'', 'size: ' . $size)
+                        ->setCellValue('B'.$start.'', $options_str)
                         ->mergeCells('B'.(string)($start+1).':B'.$end.'')
 
                         ->setCellValue('C'.$start.'', $data['name'])
