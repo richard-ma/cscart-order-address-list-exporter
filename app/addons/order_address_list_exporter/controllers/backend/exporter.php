@@ -30,10 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
         array_push($orders, $order);
     }
     //fn_print_r($orders); // test get order info
+    //fn_print_r($orders[0]);
+    //exit();
 
     if ($mode == 'address_list') {
         // export address list
-        $output = "OrderNo, Name, Address, City, Province, Post, Country, Tel" . PHP_EOL;
+        $output = "OrderNo, Name, Address, City, Province, Post, Country, Tel, ShippingMethod" . PHP_EOL;
         foreach ($orders as $order) {
             $data['order_id'] = '"' . $order['order_id'] . '"';
             $data['name'] = '"' . $order['s_firstname'] . ' ' . $order['s_lastname'] . '"';
@@ -43,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
             $data['post'] = '"' . $order['s_zipcode'] . '"';
             $data['country'] = '"' . $order['s_country'] . '"';
             $data['tel'] = '"' . $order['s_phone'] . '"';
+            $data['shipping_method'] = '"' . $order['shipping'][0]['shipping'] . '"';
 
             $output = $output . implode($data, ',') . PHP_EOL;
         }
@@ -91,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
             $data['country'] = $order['s_country'];
             $data['post'] = $order['s_zipcode'];
             $data['tel'] = $order['s_phone'];
+            $data['shipping_method'] = $order['shipping'][0]['shipping'];
 
             //fn_print_r($order);
             foreach($order['products'] as $product) {
@@ -126,6 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->setCellValue('D'.$start.'', $product['product'])
                         ->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
                         ->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
+                        ->setCellValue('D'.(string)($start + 3).'', 'ShippingMethod: '.$data['shipping_method'])
 
                         ->getStyle('C'.(string)($start + 5))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 // add picture
