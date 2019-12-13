@@ -4,6 +4,32 @@ if (!defined('BOOTSTRAP')) { die('Access denied'); }
 
 use Tygh\Registry;
 
+function get_product_type($name) {
+    $name = strtolower($name); // change $name to lowercase
+    $keyword = array(
+        "man" => array("man", "men"),
+        "woman" => array("woman", "women"),
+        "kid" => array("youth", "kid")
+    );
+    $flg = Null;
+    foreach ($keyword as $key => $words) {
+        foreach ($words as $word) {
+            if (strpos($name, $word) !== false) {
+                $flg = $key;
+                break;
+            }
+        }
+    }
+    if ($flg == "man") {
+        return "男装";
+    } else if ($flg == "woman") {
+        return "女装";
+    } else if ($flg == "kid") {
+        return "童装";
+    }
+    return "类别不明";
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
 
     // explode order IDs
@@ -82,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
         $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 
         // Add some data
-        $delta = 6;
+        $delta = 12;
         $start = 1;
 
         foreach ($orders as $order) {
@@ -117,8 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->mergeCells('A'.$start.':A'.$end.'')
                         ->setCellValue('A'.$start.'', $data['order_id'])
     
-                        ->setCellValue('B'.$start.'', $options_str)
-                        ->mergeCells('B'.(string)($start+1).':B'.$end.'')
+                        ->setCellValue('B'.$start.'', $product['product'])
+                        ->setCellValue('B'.(string)($start+1).'', get_product_type($product['product']).' 数量: '.$product['amount'].'; '.$options_str)
+                        ->mergeCells('B'.(string)($start+2).':B'.$end.'')
 
                         ->setCellValue('C'.$start.'', $data['name'])
                         ->setCellValue('C'.(string)($start + 1).'', $order['s_address'])
@@ -127,7 +154,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->setCellValue('C'.(string)($start + 4).'', $data['country'])
                         ->setCellValue('C'.(string)($start + 5).'', $data['tel'])
 
-                        ->setCellValue('D'.$start.'', $product['product'])
                         ->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
                         ->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
                         ->setCellValue('D'.(string)($start + 3).'', 'ShippingMethod: '.$data['shipping_method'])
@@ -140,8 +166,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                 
                 $objDrawing = new PHPExcel_Worksheet_Drawing();
                 $objDrawing->setPath($imagePath);
-                $objDrawing->setCoordinates('B'.(string)($start+1));
-                $objDrawing->setHeight(80);
+                $objDrawing->setCoordinates('B'.(string)($start+2));
+                $objDrawing->setHeight(160);
                 $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
 
                 $start = $start + $delta;
