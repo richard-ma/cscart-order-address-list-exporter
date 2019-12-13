@@ -7,9 +7,9 @@ use Tygh\Registry;
 function get_product_type($name) {
     $name = strtolower($name); // change $name to lowercase
     $keyword = array(
-        "man" => array("man", "men"),
-        "woman" => array("woman", "women"),
-        "kid" => array("youth", "kid")
+        "man" => array(" man", " men"),
+        "woman" => array(" woman", " women", " lady", " ladies"),
+        "kid" => array(" youth", " kid", " preschool", " newborn")
     );
     $flg = Null;
     foreach ($keyword as $key => $words) {
@@ -20,14 +20,13 @@ function get_product_type($name) {
             }
         }
     }
-    if ($flg == "man") {
-        return "男装";
-    } else if ($flg == "woman") {
+    if ($flg == "woman") {
         return "女装";
     } else if ($flg == "kid") {
         return "童装";
+    } else {
+        return "男装";
     }
-    return "类别不明";
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
@@ -108,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
         $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
 
         // Add some data
-        $delta = 12;
+        $delta = 15;
         $start = 1;
 
         foreach ($orders as $order) {
@@ -121,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
             $data['post'] = $order['s_zipcode'];
             $data['tel'] = $order['s_phone'];
             $data['shipping_method'] = $order['shipping'][0]['shipping'];
+            $data['notes'] = $order['notes'];
 
             //fn_print_r($order);
             foreach($order['products'] as $product) {
@@ -143,9 +143,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->mergeCells('A'.$start.':A'.$end.'')
                         ->setCellValue('A'.$start.'', $data['order_id'])
     
-                        ->setCellValue('B'.$start.'', $product['product'])
+                        ->setCellValue('B'.(string)($start).'', $product['product'])
                         ->setCellValue('B'.(string)($start+1).'', get_product_type($product['product']).' 数量: '.$product['amount'].'; '.$options_str)
-                        ->mergeCells('B'.(string)($start+2).':B'.$end.'')
+                        ->setCellValue('B'.(string)($start+2).'', $data['notes'])
+                        ->mergeCells('B'.(string)($start+3).':B'.$end.'')
 
                         ->setCellValue('C'.$start.'', $data['name'])
                         ->setCellValue('C'.(string)($start + 1).'', $order['s_address'])
@@ -154,11 +155,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->setCellValue('C'.(string)($start + 4).'', $data['country'])
                         ->setCellValue('C'.(string)($start + 5).'', $data['tel'])
 
-                        ->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
-                        ->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
-                        ->setCellValue('D'.(string)($start + 3).'', 'ShippingMethod: '.$data['shipping_method'])
+                        //->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
+                        //->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
+                        ->setCellValue('D'.(string)($start).'', $data['shipping_method'])
 
-                        ->getStyle('C'.(string)($start + 5))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+                        ->getStyle('A'.(string)($start).':D'.(string)($end))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+                        //->getStyle('C'.(string)($start + 5))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
                 // add picture
                 $imageUrl = strtok($image, '?'); // only get url without params
                 $imagePath = str_replace(pathinfo(fn_url())['dirname'], Registry::get('config.dir.root'), $imageUrl);
@@ -166,8 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                 
                 $objDrawing = new PHPExcel_Worksheet_Drawing();
                 $objDrawing->setPath($imagePath);
-                $objDrawing->setCoordinates('B'.(string)($start+2));
-                $objDrawing->setHeight(160);
+                $objDrawing->setCoordinates('B'.(string)($start+4));
+                $objDrawing->setHeight(200);
                 $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
 
                 $start = $start + $delta;
