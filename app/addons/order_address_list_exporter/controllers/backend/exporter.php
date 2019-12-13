@@ -157,7 +157,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
 
                         //->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
                         //->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
+                        ->mergeCells('D'.(string)($start).':D'.$end.'')
                         ->setCellValue('D'.(string)($start).'', $data['shipping_method'])
+                        // merge E, F, G
+                        ->mergeCells('E'.(string)($start).':E'.$end.'')
+                        ->mergeCells('F'.(string)($start).':F'.$end.'')
+                        ->mergeCells('G'.(string)($start).':G'.$end.'')
 
                         ->getStyle('A'.(string)($start).':D'.(string)($end))->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
                         //->getStyle('C'.(string)($start + 5))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
