@@ -148,12 +148,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->setCellValue('B'.(string)($start+2).'', $data['notes'])
                         ->mergeCells('B'.(string)($start+3).':B'.$end.'')
 
-                        ->setCellValue('C'.$start.'', $data['name'])
-                        ->setCellValue('C'.(string)($start + 1).'', $order['s_address'])
-                        ->setCellValue('C'.(string)($start + 2).'', $order['s_address_2'])
-                        ->setCellValue('C'.(string)($start + 3).'', $data['city']. ', ' .$data['province']. ' ' .$data['post'])
-                        ->setCellValue('C'.(string)($start + 4).'', $data['country'])
-                        ->setCellValue('C'.(string)($start + 5).'', $data['tel'])
+                        ->setCellValue('C'.(string)($start + 3).'', $data['name'])
+                        ->setCellValue('C'.(string)($start + 4).'', $order['s_address'])
+                        ->setCellValue('C'.(string)($start + 5).'', $order['s_address_2'])
+                        ->setCellValue('C'.(string)($start + 6).'', $data['city']. ', ' .$data['province']. ' ' .$data['post'])
+                        ->setCellValue('C'.(string)($start + 7).'', $data['country'])
+                        ->setCellValue('C'.(string)($start + 8).'', $data['tel'])
 
                         //->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
                         //->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
