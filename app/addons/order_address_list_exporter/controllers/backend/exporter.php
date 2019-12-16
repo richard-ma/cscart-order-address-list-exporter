@@ -7,25 +7,47 @@ use Tygh\Registry;
 function get_product_type($name) {
     $name = strtolower($name); // change $name to lowercase
     $keyword = array(
-        "man" => array(" man", " men"),
-        "woman" => array(" woman", " women", " lady", " ladies"),
-        "kid" => array(" youth", " kid", " preschool", " newborn")
+        "man" => array(
+            "/\\sman('s)?(\\s)?/i", 
+            "/^man('s)?(\\s)?/i", 
+            "/\\smen('s)?(\\s)?/i", 
+            "/^men('s)?(\\s)?/i"),
+        "woman" => array(
+            "/\\swoman('s)?(\\s)?/i", 
+            "/^woman('s)?(\\s)?/i", 
+            "/\\swomen('s)?(\\s)?/i", 
+            "/^women('s)?(\\s)?/i", 
+            "/\\slady(\\s)?/i", 
+            "/^lady(\\s)?/i", 
+            "/^ladies(\\s)?/i"),
+        "kid" => array(
+            "/\\skid('s|s)?(\\s)?/i", 
+            "/^kid('s|s)?(\\s)?/i", 
+            "/\\syouth(\\s)?/i", 
+            "/^youth(\\s)?/i", 
+            "/\\spreschool(\\s)?/i", 
+            "/^preschool(\\s)?/i", 
+            "/\\snewborn(\\s)?/i",
+            "/^newborn(\\s)?/i"),
     );
+    //print_r($keyword);
     $flg = Null;
     foreach ($keyword as $key => $words) {
         foreach ($words as $word) {
-            if (strpos($name, $word) !== false) {
+            if (preg_match($word, $name) > 0) { // match!
                 $flg = $key;
                 break;
             }
         }
     }
-    if ($flg == "woman") {
+    if ($flg == "man") {
+        return "男装";
+    } else if ($flg == "woman") {
         return "女装";
     } else if ($flg == "kid") {
         return "童装";
     } else {
-        return "男装";
+        return "未识别";
     }
 }
 
