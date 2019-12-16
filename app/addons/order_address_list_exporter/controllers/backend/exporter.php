@@ -47,7 +47,7 @@ function get_product_type($name) {
     } else if ($flg == "kid") {
         return "童装";
     } else {
-        return "未识别";
+        return "男装";
     }
 }
 
