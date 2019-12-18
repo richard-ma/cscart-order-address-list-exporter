@@ -145,6 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
             $data['notes'] = $order['notes'];
 
             //fn_print_r($order);
+            $address_flg = True;
             foreach($order['products'] as $product) {
                 //fn_print_r($product);
 
@@ -168,15 +169,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_REQUEST['order_ids'])) {
                         ->setCellValue('B'.(string)($start).'', $product['product'])
                         ->setCellValue('B'.(string)($start+1).'', get_product_type($product['product']).' 数量: '.$product['amount'].'; '.$options_str)
                         ->setCellValue('B'.(string)($start+2).'', $data['notes'])
-                        ->mergeCells('B'.(string)($start+3).':B'.$end.'')
+                        ->mergeCells('B'.(string)($start+3).':B'.$end.'');
 
-                        ->setCellValue('C'.(string)($start + 3).'', $data['name'])
-                        ->setCellValue('C'.(string)($start + 4).'', $order['s_address'])
-                        ->setCellValue('C'.(string)($start + 5).'', $order['s_address_2'])
-                        ->setCellValue('C'.(string)($start + 6).'', $data['city']. ', ' .$data['province']. ' ' .$data['post'])
-                        ->setCellValue('C'.(string)($start + 7).'', $data['country'])
-                        ->setCellValue('C'.(string)($start + 8).'', $data['tel'])
+                if ($address_flg == True) {
+                    $objPHPExcel->getActiveSheet()
+                            ->setCellValue('C'.(string)($start + 3).'', $data['name'])
+                            ->setCellValue('C'.(string)($start + 4).'', $order['s_address'])
+                            ->setCellValue('C'.(string)($start + 5).'', $order['s_address_2'])
+                            ->setCellValue('C'.(string)($start + 6).'', $data['city']. ', ' .$data['province']. ' ' .$data['post'])
+                            ->setCellValue('C'.(string)($start + 7).'', $data['country'])
+                            ->setCellValue('C'.(string)($start + 8).'', $data['tel']);
+                    $address_flg = False;
+                }
 
+                $objPHPExcel->getActiveSheet()
                         //->setCellValue('D'.(string)($start + 1).'', 'Qty: '.$product['amount'])
                         //->setCellValue('D'.(string)($start + 2).'', 'SKU: '.$product['product_code'])
                         ->mergeCells('D'.(string)($start).':D'.$end.'')
